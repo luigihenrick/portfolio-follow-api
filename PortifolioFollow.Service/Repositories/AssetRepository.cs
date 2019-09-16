@@ -1,5 +1,7 @@
 ﻿using Dapper;
+using MySql.Data.MySqlClient;
 using PortifolioFollow.Domain;
+using PortifolioFollow.Service.Commons;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -13,9 +15,9 @@ namespace PortifolioFollow.Service.Repositories
     {
         public Asset Insert(Asset asset)
         {
-            using(var conn = new SqlConnection("Data Source=localhost;Integrated Security=SSPI;Initial Catalog=PortifolioFollow"))
+            using(var conn = new MySqlConnection(GlobalVariables.DatabaseConnection))
             {
-                asset.AssetId = conn.Execute(@"INSERT INTO [Asset] ([Symbol], [Name]) VALUES (@Symbol, @Name); SELECT CAST(SCOPE_IDENTITY() as int)", asset);
+                asset.AssetId = conn.Execute(@"INSERT INTO Asset (Symbol, Name) VALUES (@Symbol, @Name); SELECT LAST_INSERT_ID();", asset);
             }
 
             return asset;
@@ -23,9 +25,9 @@ namespace PortifolioFollow.Service.Repositories
 
         public Asset FindBySymbol(string symbol)
         {
-            using (var conn = new SqlConnection("Data Source=localhost;Integrated Security=SSPI;Initial Catalog=PortifolioFollow"))
+            using (var conn = new MySqlConnection(GlobalVariables.DatabaseConnection))
             {
-                return conn.Query<Asset>("SELECT [Id], [Symbol], [Name] FROM [Asset] WHERE [Symbol] = @Symbol", new { Symbol = symbol }).FirstOrDefault();
+                return conn.Query<Asset>("SELECT Id AssetId, Symbol, Name FROM Asset WHERE Symbol = @Symbol", new { Symbol = symbol }).FirstOrDefault();
             }
         }
     }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using PortifolioFollow.Domain;
 using PortifolioFollow.Service.Repositories;
 
 namespace PortifolioFollow.Controllers
@@ -19,10 +20,16 @@ namespace PortifolioFollow.Controllers
             _assetRepository = new AssetRepository();
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{symbol}")]
         public ActionResult<string> Get(string symbol)
         {
             return JsonConvert.SerializeObject(_assetRepository.FindBySymbol(symbol));
+        }
+
+        [HttpPost]
+        public void Post([FromBody] Asset asset)
+        {
+            _assetRepository.Insert(asset);
         }
     }
 }
