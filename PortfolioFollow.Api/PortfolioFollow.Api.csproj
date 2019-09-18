@@ -19,8 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PortifolioFollow.Domain\PortifolioFollow.Domain.csproj" />
-    <ProjectReference Include="..\PortifolioFollow.Service\PortifolioFollow.Service.csproj" />
+    <ProjectReference Include="..\PortfolioFollow.Domain\PortfolioFollow.Domain.csproj" />
+    <ProjectReference Include="..\PortfolioFollow.Service\PortfolioFollow.Service.csproj" />
   </ItemGroup>
 
 </Project>

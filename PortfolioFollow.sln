@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.156
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortifolioFollow", "PortifolioFollow\PortifolioFollow.csproj", "{DF13D886-BC8B-4091-9DBD-CB2E7776A58F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortfolioFollow.Api", "PortfolioFollow.Api\PortfolioFollow.Api.csproj", "{DF13D886-BC8B-4091-9DBD-CB2E7776A58F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortifolioFollow.Domain", "PortifolioFollow.Domain\PortifolioFollow.Domain.csproj", "{D80853B1-48CD-4A70-B7BD-D691377A4DC4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortfolioFollow.Domain", "PortfolioFollow.Domain\PortfolioFollow.Domain.csproj", "{D80853B1-48CD-4A70-B7BD-D691377A4DC4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortifolioFollow.Service", "PortifolioFollow.Service\PortifolioFollow.Service.csproj", "{0251926C-4A83-419A-8A94-F9B207524929}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortfolioFollow.Service", "PortfolioFollow.Service\PortfolioFollow.Service.csproj", "{0251926C-4A83-419A-8A94-F9B207524929}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
