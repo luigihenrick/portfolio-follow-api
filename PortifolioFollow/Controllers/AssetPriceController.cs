@@ -13,27 +13,27 @@ namespace PortifolioFollow.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AssetController : ControllerBase
+    public class AssetPriceController : ControllerBase
     {
-        private readonly IAssetRepository _assetRepository;
+        private readonly IAssetPriceRepository _assetPriceRepository;
         private readonly IOptions<GlobalVariables> _config;
 
-        public AssetController(IAssetRepository assetRepository, IOptions<GlobalVariables> config)
+        public AssetPriceController(IAssetPriceRepository assetPriceRepository, IOptions<GlobalVariables> config)
         {
-            _assetRepository = assetRepository;
+            _assetPriceRepository = assetPriceRepository;
             _config = config;
         }
 
         [HttpGet("{symbol}")]
         public ActionResult<string> Get(string symbol)
         {
-            return JsonConvert.SerializeObject(_assetRepository.FindBySymbol(symbol));
+            return JsonConvert.SerializeObject(_assetPriceRepository.FindBySymbol(symbol));
         }
 
         [HttpPost]
-        public void Post([FromBody] Asset asset)
+        public void Post([FromBody] AssetPrice assetPrice)
         {
-            _assetRepository.Insert(asset);
+            _assetPriceRepository.Insert(assetPrice);
         }
     }
 }
