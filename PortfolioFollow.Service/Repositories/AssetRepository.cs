@@ -6,11 +6,12 @@ using System.Linq;
 using System.Text;
 using Dapper;
 using MySql.Data.MySqlClient;
-using PortifolioFollow.Domain;
-using PortifolioFollow.Service.Commons;
+using PortfolioFollow.Domain;
+using PortfolioFollow.Service.Commons;
 using Microsoft.Extensions.Options;
+using PortfolioFollow.Common.Interfaces;
 
-namespace PortifolioFollow.Service.Repositories
+namespace PortfolioFollow.Service.Repositories
 {
     public class AssetRepository : IAssetRepository
     {
@@ -29,6 +30,14 @@ namespace PortifolioFollow.Service.Repositories
             }
 
             return asset;
+        }
+
+        public void Insert(IEnumerable<Asset> assets)
+        {
+            using(var conn = new MySqlConnection(_config.Value.DatabaseConnection))
+            {
+                conn.Execute(@"INSERT INTO Asset (Symbol, Name) VALUES (@Symbol, @Name)", assets);
+            }
         }
 
         public Asset FindBySymbol(string symbol)

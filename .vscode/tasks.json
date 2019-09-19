@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/PortifolioFollow/PortifolioFollow.csproj",
+                "${workspaceFolder}/PortfolioFollow.Api/PortfolioFollow.Api.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -19,7 +19,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/PortifolioFollow/PortifolioFollow.csproj",
+                "${workspaceFolder}/PortfolioFollow.Api/PortfolioFollow.Api.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],

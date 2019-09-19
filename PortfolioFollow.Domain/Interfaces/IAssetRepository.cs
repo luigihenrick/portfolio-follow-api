@@ -1,7 +1,12 @@
-using PortifolioFollow.Domain;
+using System.Collections.Generic;
+using PortfolioFollow.Domain;
 
-public interface IAssetRepository
+namespace PortfolioFollow.Common.Interfaces
 {
-    Asset Insert(Asset asset);
-    Asset FindBySymbol(string symbol);
+    public interface IAssetRepository
+    {
+        Asset Insert(Asset asset);
+        void Insert(IEnumerable<Asset> assets);
+        Asset FindBySymbol(string symbol);
+    }
 }

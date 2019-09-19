@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "PortifolioFollow": {
+    "PortfolioFollow": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",

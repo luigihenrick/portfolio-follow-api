@@ -10,11 +10,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using PortifolioFollow.Service.Commons;
-using PortifolioFollow.Service.Repositories;
+using PortfolioFollow.Common.Interfaces;
+using PortfolioFollow.Service.Business;
+using PortfolioFollow.Service.Commons;
+using PortfolioFollow.Service.Repositories;
 using Swashbuckle.AspNetCore.Swagger;
 
-namespace PortifolioFollow
+namespace PortfolioFollow
 {
     public class Startup
     {
@@ -38,9 +40,11 @@ namespace PortifolioFollow
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "PortifolioFollow Api", Version = "v1" });
+                c.SwaggerDoc("v1", new Info { Title = "PortfolioFollow Api", Version = "v1" });
             });
 
+            services.AddScoped<IAssetBusiness, AssetBusiness>();
+            services.AddScoped<IAssetPriceBusiness, AssetPriceBusiness>();
             services.AddScoped<IAssetRepository, AssetRepository>();
             services.AddScoped<IAssetPriceRepository, AssetPriceRepository>();
         }

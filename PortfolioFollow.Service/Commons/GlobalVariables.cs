@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace PortifolioFollow.Service.Commons
+namespace PortfolioFollow.Service.Commons
 {
     public class GlobalVariables
     {

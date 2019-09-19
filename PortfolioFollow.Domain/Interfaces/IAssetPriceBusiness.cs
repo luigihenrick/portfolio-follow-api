@@ -3,7 +3,7 @@ using PortfolioFollow.Domain;
 
 namespace PortfolioFollow.Common.Interfaces
 {
-    public interface IAssetPriceRepository
+    public interface IAssetPriceBusiness
     {
         AssetPrice Insert(AssetPrice assetPrice);
         IEnumerable<AssetPrice> FindBySymbol(string symbol);

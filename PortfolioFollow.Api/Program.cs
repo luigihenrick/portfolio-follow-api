@@ -7,10 +7,10 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using PortifolioFollow.Domain;
-using PortifolioFollow.Service.Repositories;
+using PortfolioFollow.Domain;
+using PortfolioFollow.Service.Repositories;
 
-namespace PortifolioFollow
+namespace PortfolioFollow
 {
     public class Program
     {

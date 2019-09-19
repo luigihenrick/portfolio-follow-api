@@ -1,14 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Collections.Generic;
 using Dapper;
 using Microsoft.Extensions.Options;
 using MySql.Data.MySqlClient;
-using PortifolioFollow.Domain;
-using PortifolioFollow.Service.Commons;
+using PortfolioFollow.Domain;
+using PortfolioFollow.Service.Commons;
+using PortfolioFollow.Common.Interfaces;
 
-namespace PortifolioFollow.Service.Repositories
+namespace PortfolioFollow.Service.Repositories
 {
     public class AssetPriceRepository : IAssetPriceRepository
     {
