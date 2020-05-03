@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
+using CsvHelper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -24,6 +27,19 @@ namespace PortfolioFollow.Controllers
         {
             _assetBusiness = assetBusiness;
             _config = config;
+        }
+
+        [HttpGet()]
+        public ActionResult<string> GetAll()
+        {
+            using (var stream = typeof(AssetController).GetTypeInfo().Assembly.GetManifestResourceStream("PortfolioFollow.Api.Content.Assets.csv"))
+            using (var reader = new StreamReader(stream, Encoding.UTF8))
+            using (var csv = new CsvReader(reader))
+            {
+                var assets = csv.GetRecords<Asset>();
+
+                return JsonConvert.SerializeObject(assets);
+            }
         }
 
         [HttpGet("{symbol}")]
