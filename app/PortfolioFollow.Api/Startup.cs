@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Conventions;
 using PortfolioFollow.Common.Interfaces;
 using PortfolioFollow.Service.Business;
 using PortfolioFollow.Service.Commons;
@@ -25,8 +27,8 @@ namespace PortfolioFollow
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
-            .SetBasePath(env.ContentRootPath)
-            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 
             Configuration = builder.Build();
         }
@@ -36,17 +38,23 @@ namespace PortfolioFollow
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.Configure<GlobalVariables>(Configuration.GetSection("GlobalVariables"));
+            services.Configure<Configurations>(Configuration.GetSection("GlobalVariables"));
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "PortfolioFollow Api", Version = "v1" });
+                c.SwaggerDoc("v2", new Info { Title = "PortfolioFollow Api", Version = "v2" });
+                c.DescribeAllEnumsAsStrings();
             });
 
-            services.AddScoped<IAssetBusiness, AssetBusiness>();
             services.AddScoped<IAssetPriceBusiness, AssetPriceBusiness>();
-            services.AddScoped<IAssetRepository, AssetRepository>();
             services.AddScoped<IAssetPriceRepository, AssetPriceRepository>();
+
+            var pack = new ConventionPack
+            {
+                new EnumRepresentationConvention(BsonType.String)
+            };
+
+            ConventionRegistry.Register("EnumStringConvention", pack, t => true);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -67,7 +75,7 @@ namespace PortfolioFollow
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Values Api V1");
+                c.SwaggerEndpoint("/swagger/v2/swagger.json", "PortfolioFollow Api V2");
             });
         }
     }
