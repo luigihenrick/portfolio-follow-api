@@ -11,6 +11,9 @@ using PortfolioFollow.Common.Interfaces;
 using PortfolioFollow.Domain.Classes;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
+using System.Net.Http;
+using System.Text.RegularExpressions;
+using System.Text;
 
 namespace PortfolioFollow.Controllers
 {
@@ -43,6 +46,38 @@ namespace PortfolioFollow.Controllers
             };
 
             return JsonConvert.SerializeObject(_assetPriceBusiness.FindPrice(type, symbol), settings);
+        }
+
+        [HttpGet]
+        public async Task<string> GetHtmlAsync()
+        {
+            HttpClient client = new HttpClient();
+
+            var requestReturn = await client.GetStringAsync("http://www.tesouro.gov.br/web/stn/tesouro-direto-precos-e-taxas-dos-titulos");
+
+            var sb = new StringBuilder();
+
+            var regexLine = new Regex(@"<tr[\s\S]*?<\/tr>");
+
+            foreach (var line in regexLine.Matches(requestReturn))
+            {
+                var regexElement = new Regex(@"<td[^>](.+?)<\/td>");
+
+                var elements = regexElement.Matches(line.ToString());
+
+                if (elements.Count() == 4)
+                {
+                    var regexContent = new Regex(@">([^<]*)<");
+
+                    sb.Append($"Nome: {regexContent.Match(elements[0].Value).Value.Replace(">", "").Replace("<", "")} ");
+                    sb.Append($"Vencimento: {regexContent.Match(elements[1].Value).Value.Replace(">", "").Replace("<", "")} ");
+                    sb.Append($"Rendimento: {regexContent.Match(elements[2].Value).Value.Replace(">", "").Replace("<", "")} ");
+                    sb.Append($"Preço Unitário: {regexContent.Match(elements[3].Value).Value.Replace(">", "").Replace("<", "")} ");
+                    sb.AppendLine();
+                }
+            }
+
+            return sb.ToString();
         }
 
         [HttpPost]
