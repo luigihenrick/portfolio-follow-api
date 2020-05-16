@@ -17,7 +17,7 @@ using System.Text;
 
 namespace PortfolioFollow.Controllers
 {
-    [Route("api/asset-price")]
+    [Route("api/preço")]
     [ApiController]
     public class AssetPriceController : ControllerBase
     {
@@ -30,8 +30,8 @@ namespace PortfolioFollow.Controllers
             _config = config;
         }
 
-        [HttpGet("type/{type}/symbol/{symbol}")]
-        public ActionResult<string> Get(AssetType type, string symbol)
+        [HttpGet("renda-variavel/ticker/{ticker}")]
+        public ActionResult<string> Get(string ticker)
         {
             var settings = new JsonSerializerSettings
             {
@@ -45,11 +45,12 @@ namespace PortfolioFollow.Controllers
                 }
             };
 
-            return JsonConvert.SerializeObject(_assetPriceBusiness.FindPrice(type, symbol), settings);
+            return JsonConvert.SerializeObject(_assetPriceBusiness.FindPrice(AssetType.RV, ticker), settings);
         }
 
         [HttpGet]
-        public async Task<string> GetHtmlAsync()
+        [Route("tesouro-direto")]
+        public async Task<string> GetFixedIncomeAsync()
         {
             HttpClient client = new HttpClient();
 
@@ -78,6 +79,22 @@ namespace PortfolioFollow.Controllers
             }
 
             return sb.ToString();
+        }
+
+        [HttpGet]
+        [Route("renda-fixa")]
+        public async Task<object> GetPrivateFixedIncomeAsync(DateTime dataInicio, DateTime dataFim, decimal percentualCdi, decimal valorAplicado)
+        {
+            HttpClient client = new HttpClient();
+
+            var requestReturn = await client.GetStringAsync(
+                $"https://calculadorarendafixa.com.br/calculadora/di/calculo" +
+                    $"?dataInicio={dataInicio.ToString("yyyy-MM-dd")}" +
+                    $"&dataFim={dataFim.ToString("yyyy-MM-dd")}" +
+                    $"&percentual={percentualCdi.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}" +
+                    $"&valor={valorAplicado.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}");
+
+            return JsonConvert.DeserializeObject<object>(requestReturn);
         }
 
         [HttpPost]
