@@ -1,47 +1,44 @@
 ﻿using System;
-using System.Linq;
-using System.Text;
 using System.Collections.Generic;
-using Dapper;
 using Microsoft.Extensions.Options;
-using MySql.Data.MySqlClient;
+using MongoDB.Driver;
 using PortfolioFollow.Domain;
 using PortfolioFollow.Service.Commons;
-using PortfolioFollow.Common.Interfaces;
+using PortfolioFollow.Domain.Classes;
+using PortfolioFollow.Domain.Interfaces;
 
 namespace PortfolioFollow.Service.Repositories
 {
     public class AssetPriceRepository : IAssetPriceRepository
     {
-        private readonly IOptions<GlobalVariables> _config;
+        public const string DatabaseName = "portifolio-follow";
+        private readonly IMongoDatabase _database;
 
-        public AssetPriceRepository(IOptions<GlobalVariables> config)
+        public AssetPriceRepository(IOptions<Configurations> config)
         {
-            _config = config;
-        }
-        
-        public IEnumerable<AssetPrice> FindBySymbol(string symbol)
-        {
-            using(var conn = new MySqlConnection(_config.Value.DatabaseConnection))
+            try
             {
-                return conn
-                    .Query<AssetPrice>(
-                        @"  SELECT ASP.`AssetPriceId`, ASP.`AssetId`, ASP.`Close`, ASP.`Date` 
-                            FROM `AssetPrice` ASP 
-                            INNER JOIN `Asset` ASS ON ASS.`Id` = ASP.`AssetId` 
-                            WHERE ASS.Symbol = @Symbol", 
-                        new { Symbol = symbol });
+                MongoClientSettings settings = MongoClientSettings.FromUrl(new MongoUrl(config.Value.DatabaseConnection));
+                var mongoClient = new MongoClient(settings);
+                _database = mongoClient.GetDatabase(DatabaseName);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Não foi possível se conectar com o banco de dados.", ex);
             }
         }
 
-        public AssetPrice Insert(AssetPrice assetPrice)
+        public IEnumerable<AssetPrice> FindPrice(AssetType type, string symbol)
         {
-            using(var conn = new MySqlConnection(_config.Value.DatabaseConnection))
-            {
-                assetPrice.AssetPriceId = conn.Execute(@"INSERT INTO `AssetPrice` (`AssetId`, `Close`, `Date`) VALUES (@AssetId, @Close, @Date); SELECT LAST_INSERT_ID();", assetPrice);
-            }
+            return _database.GetCollection<AssetPrice>("asset-price")
+                .Find(a => a.Type == type && a.Symbol == symbol)
+                .SortByDescending(a => a.Date)
+                .ToList();
+        }
 
-            return assetPrice;
+        public void Insert(AssetPrice assetPrice)
+        {
+            _database.GetCollection<AssetPrice>("asset-price").InsertOne(assetPrice);
         }
     }
 }

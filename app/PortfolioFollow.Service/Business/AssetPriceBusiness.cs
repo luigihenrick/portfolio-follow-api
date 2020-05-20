@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using PortfolioFollow.Domain;
-using PortfolioFollow.Common.Interfaces;
+using PortfolioFollow.Domain.Classes;
+using PortfolioFollow.Domain.Interfaces;
 
 namespace PortfolioFollow.Service.Business
 {
@@ -15,14 +14,14 @@ namespace PortfolioFollow.Service.Business
             _assetPriceRepository = assetPriceRepository;
         }
 
-        public IEnumerable<AssetPrice> FindBySymbol(string symbol)
+        public IEnumerable<AssetPrice> FindPrice(AssetType type, string symbol)
         {
-            return _assetPriceRepository.FindBySymbol(symbol);
+            return _assetPriceRepository.FindPrice(type, symbol);
         }
 
-        public AssetPrice Insert(AssetPrice assetPrice)
+        public void Insert(AssetPrice assetPrice)
         {
-            return _assetPriceRepository.Insert(assetPrice);
+            _assetPriceRepository.Insert(assetPrice);
         }
     }
 }

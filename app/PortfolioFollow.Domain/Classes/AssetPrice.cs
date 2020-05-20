@@ -1,15 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using MongoDB.Bson.Serialization.Attributes;
+using PortfolioFollow.Domain.Classes;
 
 namespace PortfolioFollow.Domain
 {
+    [BsonIgnoreExtraElements]
     public class AssetPrice
     {
-        public int AssetPriceId { get; set; }
-        public int AssetId { get; set; }
-        public decimal Close { get; set; }
+        [Required]
+        public AssetType Type { get; set; }
+        [Required]
+        public string Symbol { get; set; }
+        [Required]
+        public decimal Price { get; set; }
+        [Required]
         public DateTime Date { get; set; }
     }
 }

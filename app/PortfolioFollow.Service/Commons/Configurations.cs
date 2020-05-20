@@ -4,7 +4,7 @@ using System.Text;
 
 namespace PortfolioFollow.Service.Commons
 {
-    public class GlobalVariables
+    public class Configurations
     {
         public string DatabaseConnection { get; set; }
     }
