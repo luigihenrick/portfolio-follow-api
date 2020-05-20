@@ -7,12 +7,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Serialization;
 using PortfolioFollow.Service.Commons;
-using PortfolioFollow.Common.Interfaces;
 using PortfolioFollow.Domain.Classes;
 using PortfolioFollow.Api.Models;
+using PortfolioFollow.Domain.Interfaces;
 
 namespace PortfolioFollow.Controllers
 {
@@ -21,18 +19,22 @@ namespace PortfolioFollow.Controllers
     public class AssetPriceController : ControllerBase
     {
         private readonly IAssetPriceBusiness _assetPriceBusiness;
+        private readonly IFixedIncomeService _fixedIncomeService;
         private readonly IOptions<Configurations> _config;
 
-        public AssetPriceController(IAssetPriceBusiness assetPriceBusiness, IOptions<Configurations> config)
+        public AssetPriceController(IAssetPriceBusiness assetPriceBusiness, IFixedIncomeService fixedIncomeService, IOptions<Configurations> config)
         {
             _assetPriceBusiness = assetPriceBusiness;
+            _fixedIncomeService = fixedIncomeService;
             _config = config;
         }
 
         [HttpGet("renda-variavel/ticker/{ticker}")]
         public IActionResult Get(string ticker)
         {
-            return Ok(_assetPriceBusiness.FindPrice(AssetType.RV, ticker));
+            var result = new Asset(_assetPriceBusiness.FindPrice(AssetType.RV, ticker));
+
+            return Ok(result);
         }
 
         [HttpGet]
@@ -84,18 +86,9 @@ namespace PortfolioFollow.Controllers
 
         [HttpGet]
         [Route("renda-fixa")]
-        public async Task<object> GetPrivateFixedIncomeAsync(decimal percentualCdi, decimal valorAplicado, DateTime dataInicio, DateTime? dataFim = null)
+        public async Task<IActionResult> GetPrivateFixedIncomeAsync(decimal percentualCdi, decimal valorAplicado, DateTime dataInicio, DateTime? dataFim = null)
         {
-            HttpClient client = new HttpClient();
-
-            var requestReturn = await client.GetStringAsync(
-                $"https://calculadorarendafixa.com.br/calculadora/di/calculo" +
-                    $"?dataInicio={dataInicio.ToString("yyyy-MM-dd")}" +
-                    $"&dataFim={(dataFim ?? DateTime.Now).ToString("yyyy-MM-dd")}" +
-                    $"&percentual={percentualCdi.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}" +
-                    $"&valor={valorAplicado.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}");
-
-            return JsonConvert.DeserializeObject<object>(requestReturn);
+            return Ok(await _fixedIncomeService.GetFixedIncomePriceAsync(percentualCdi, valorAplicado, dataInicio, dataFim ?? DateTime.Now));
         }
 
         [HttpPost]

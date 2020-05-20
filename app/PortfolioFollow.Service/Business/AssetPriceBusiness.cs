@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using PortfolioFollow.Domain;
-using PortfolioFollow.Common.Interfaces;
 using PortfolioFollow.Domain.Classes;
+using PortfolioFollow.Domain.Interfaces;
 
 namespace PortfolioFollow.Service.Business
 {

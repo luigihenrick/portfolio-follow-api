@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Extensions.Options;
+using MongoDB.Driver;
 using PortfolioFollow.Domain;
 using PortfolioFollow.Service.Commons;
-using PortfolioFollow.Common.Interfaces;
-using MongoDB.Driver;
-using System;
 using PortfolioFollow.Domain.Classes;
+using PortfolioFollow.Domain.Interfaces;
 
 namespace PortfolioFollow.Service.Repositories
 {

@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+using Newtonsoft.Json.Serialization;
+using Swashbuckle.AspNetCore.Swagger;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Conventions;
-using Newtonsoft.Json.Serialization;
-using PortfolioFollow.Common.Interfaces;
+using PortfolioFollow.Domain.Interfaces;
 using PortfolioFollow.Service.Business;
 using PortfolioFollow.Service.Commons;
 using PortfolioFollow.Service.Repositories;
-using Swashbuckle.AspNetCore.Swagger;
+using PortfolioFollow.Service.ExternalServices.FixedIncome;
 
 namespace PortfolioFollow
 {
@@ -51,6 +45,7 @@ namespace PortfolioFollow
 
             services.AddScoped<IAssetPriceBusiness, AssetPriceBusiness>();
             services.AddScoped<IAssetPriceRepository, AssetPriceRepository>();
+            services.AddTransient<IFixedIncomeService, FixedIncomeService>();
 
             var pack = new ConventionPack
             {
