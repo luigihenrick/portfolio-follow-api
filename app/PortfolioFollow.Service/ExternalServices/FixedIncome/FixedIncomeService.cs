@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using PortfolioFollow.Domain;
 using PortfolioFollow.Domain.Interfaces;
 using PortfolioFollow.Domain.Classes;
+using Newtonsoft.Json.Converters;
 
 namespace PortfolioFollow.Service.ExternalServices.FixedIncome
 {
@@ -32,7 +33,9 @@ namespace PortfolioFollow.Service.ExternalServices.FixedIncome
             builder.Query = query.ToString();
             string url = builder.ToString();
 
-            var fixedIncomePrice = JsonConvert.DeserializeObject<FixedIncomePrice>(await client.GetStringAsync(url));
+            var fixedIncomePrice = JsonConvert.DeserializeObject<FixedIncomePrice>(
+                await client.GetStringAsync(url),
+                new IsoDateTimeConverter { DateTimeFormat = "dd/MM/yyyy" });
 
             return new AssetPrice
             {

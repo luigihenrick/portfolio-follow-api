@@ -12,6 +12,8 @@ using PortfolioFollow.Service.Business;
 using PortfolioFollow.Service.Commons;
 using PortfolioFollow.Service.Repositories;
 using PortfolioFollow.Service.ExternalServices.FixedIncome;
+using PortfolioFollow.Service.ExternalServices.VariableIncome;
+using Newtonsoft.Json;
 
 namespace PortfolioFollow
 {
@@ -33,6 +35,7 @@ namespace PortfolioFollow
         {
             services.AddMvc()
                 .AddJsonOptions(jsonOption => jsonOption.SerializerSettings.ContractResolver = new DefaultContractResolver { NamingStrategy = new SnakeCaseNamingStrategy() })
+                .AddJsonOptions(jsonOption => jsonOption.SerializerSettings.NullValueHandling = NullValueHandling.Ignore)
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.Configure<Configurations>(Configuration.GetSection("GlobalVariables"));
@@ -46,6 +49,7 @@ namespace PortfolioFollow
             services.AddScoped<IAssetPriceBusiness, AssetPriceBusiness>();
             services.AddScoped<IAssetPriceRepository, AssetPriceRepository>();
             services.AddTransient<IFixedIncomeService, FixedIncomeService>();
+            services.AddTransient<IVariableIncomeService, VariableIncomeService>();
 
             var pack = new ConventionPack
             {

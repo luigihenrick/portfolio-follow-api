@@ -13,6 +13,9 @@ namespace PortfolioFollow.Api.Models
         public Asset()
         { }
 
+        public Asset(Domain.AssetPrice assetPrice) : this(new List<Domain.AssetPrice> { assetPrice })
+        { }
+
         public Asset(IEnumerable<Domain.AssetPrice> assetPrices)
         {
             if(!assetPrices.Any())

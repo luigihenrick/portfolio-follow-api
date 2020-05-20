@@ -20,26 +20,34 @@ namespace PortfolioFollow.Controllers
     {
         private readonly IAssetPriceBusiness _assetPriceBusiness;
         private readonly IFixedIncomeService _fixedIncomeService;
+        private readonly IVariableIncomeService _variableIncomeService;
         private readonly IOptions<Configurations> _config;
 
-        public AssetPriceController(IAssetPriceBusiness assetPriceBusiness, IFixedIncomeService fixedIncomeService, IOptions<Configurations> config)
+        public AssetPriceController(
+            IAssetPriceBusiness assetPriceBusiness, 
+            IFixedIncomeService fixedIncomeService, 
+            IVariableIncomeService variableIncomeService,
+            IOptions<Configurations> config)
         {
             _assetPriceBusiness = assetPriceBusiness;
             _fixedIncomeService = fixedIncomeService;
+            _variableIncomeService = variableIncomeService;
             _config = config;
         }
 
-        [HttpGet("renda-variavel/ticker/{ticker}")]
-        public IActionResult Get(string ticker)
+        [HttpGet]
+        [Route("renda-variavel/{ticker}")]
+        [Produces("application/json")]
+        public async Task<IActionResult> GetAsync(string ticker)
         {
-            var result = new Asset(_assetPriceBusiness.FindPrice(AssetType.RV, ticker));
+            var result = await _variableIncomeService.GetVariableIncomePriceAsync(ticker);
 
-            return Ok(result);
+            return Ok(new Asset(result));
         }
 
         [HttpGet]
-        [Produces("application/json")]
         [Route("tesouro-direto")]
+        [Produces("application/json")]
         public async Task<IActionResult> GetFixedIncomeAsync()
         {
             var result = new List<Asset>();
@@ -86,9 +94,12 @@ namespace PortfolioFollow.Controllers
 
         [HttpGet]
         [Route("renda-fixa")]
+        [Produces("application/json")]
         public async Task<IActionResult> GetPrivateFixedIncomeAsync(decimal percentualCdi, decimal valorAplicado, DateTime dataInicio, DateTime? dataFim = null)
         {
-            return Ok(await _fixedIncomeService.GetFixedIncomePriceAsync(percentualCdi, valorAplicado, dataInicio, dataFim ?? DateTime.Now));
+            var result = await _fixedIncomeService.GetFixedIncomePriceAsync(percentualCdi, valorAplicado, dataInicio, dataFim ?? DateTime.Now);
+
+            return Ok(new Asset(result));
         }
 
         [HttpPost]
