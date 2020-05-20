@@ -41,7 +41,7 @@ namespace PortfolioFollow.Service.ExternalServices.FixedIncome
             {
                 Type = AssetType.RF,
                 Price = fixedIncomePrice.ValorCalculado,
-                Date = DateTime.Now
+                Date = DateTime.Today
             };
         }
     }

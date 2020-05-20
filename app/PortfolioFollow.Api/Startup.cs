@@ -14,6 +14,7 @@ using PortfolioFollow.Service.Repositories;
 using PortfolioFollow.Service.ExternalServices.FixedIncome;
 using PortfolioFollow.Service.ExternalServices.VariableIncome;
 using Newtonsoft.Json;
+using PortfolioFollow.Service.ExternalServices.TreasuryDirect;
 
 namespace PortfolioFollow
 {
@@ -50,6 +51,7 @@ namespace PortfolioFollow
             services.AddScoped<IAssetPriceRepository, AssetPriceRepository>();
             services.AddTransient<IFixedIncomeService, FixedIncomeService>();
             services.AddTransient<IVariableIncomeService, VariableIncomeService>();
+            services.AddTransient<ITreasureDirectService, TreasureDirectService>();
 
             var pack = new ConventionPack
             {
