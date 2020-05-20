@@ -16,7 +16,7 @@ using PortfolioFollow.Api.Models;
 
 namespace PortfolioFollow.Controllers
 {
-    [Route("api/preço")]
+    [Route("api/preco")]
     [ApiController]
     public class AssetPriceController : ControllerBase
     {
@@ -30,29 +30,18 @@ namespace PortfolioFollow.Controllers
         }
 
         [HttpGet("renda-variavel/ticker/{ticker}")]
-        public ActionResult<string> Get(string ticker)
+        public IActionResult Get(string ticker)
         {
-            var settings = new JsonSerializerSettings
-            {
-                Converters = new List<JsonConverter> { new StringEnumConverter() },
-                ContractResolver = new DefaultContractResolver
-                {
-                    NamingStrategy = new SnakeCaseNamingStrategy()
-                    {
-                        OverrideSpecifiedNames = false
-                    }
-                }
-            };
-
-            return JsonConvert.SerializeObject(_assetPriceBusiness.FindPrice(AssetType.RV, ticker), settings);
+            return Ok(_assetPriceBusiness.FindPrice(AssetType.RV, ticker));
         }
 
         [HttpGet]
+        [Produces("application/json")]
         [Route("tesouro-direto")]
-        public async Task<string> GetFixedIncomeAsync()
+        public async Task<IActionResult> GetFixedIncomeAsync()
         {
             var result = new List<Asset>();
-            HttpClient client = new HttpClient();
+            var client = new HttpClient();
 
             var requestReturn = await client.GetStringAsync("http://www.tesouro.gov.br/web/stn/tesouro-direto-precos-e-taxas-dos-titulos");
 
@@ -90,7 +79,7 @@ namespace PortfolioFollow.Controllers
                 }
             }
 
-            return JsonConvert.SerializeObject(result);
+            return Ok(result);
         }
 
         [HttpGet]

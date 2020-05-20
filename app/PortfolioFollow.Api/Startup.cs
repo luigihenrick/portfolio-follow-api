@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Conventions;
+using Newtonsoft.Json.Serialization;
 using PortfolioFollow.Common.Interfaces;
 using PortfolioFollow.Service.Business;
 using PortfolioFollow.Service.Commons;
@@ -36,7 +37,9 @@ namespace PortfolioFollow
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc()
+                .AddJsonOptions(jsonOption => jsonOption.SerializerSettings.ContractResolver = new DefaultContractResolver { NamingStrategy = new SnakeCaseNamingStrategy() })
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.Configure<Configurations>(Configuration.GetSection("GlobalVariables"));
 
