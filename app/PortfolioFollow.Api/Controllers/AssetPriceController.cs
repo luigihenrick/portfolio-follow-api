@@ -1,19 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using PortfolioFollow.Domain;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 using PortfolioFollow.Service.Commons;
 using PortfolioFollow.Common.Interfaces;
 using PortfolioFollow.Domain.Classes;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Serialization;
-using System.Net.Http;
-using System.Text.RegularExpressions;
-using System.Text;
+using PortfolioFollow.Api.Models;
 
 namespace PortfolioFollow.Controllers
 {
@@ -52,17 +51,17 @@ namespace PortfolioFollow.Controllers
         [Route("tesouro-direto")]
         public async Task<string> GetFixedIncomeAsync()
         {
+            var result = new List<Asset>();
             HttpClient client = new HttpClient();
 
             var requestReturn = await client.GetStringAsync("http://www.tesouro.gov.br/web/stn/tesouro-direto-precos-e-taxas-dos-titulos");
-
-            var sb = new StringBuilder();
 
             var regexLine = new Regex(@"<tr[\s\S]*?<\/tr>");
 
             foreach (var line in regexLine.Matches(requestReturn))
             {
                 var regexElement = new Regex(@"<td[^>](.+?)<\/td>");
+                var regexClean = new Regex(@"[R$]|>|<");
 
                 var elements = regexElement.Matches(line.ToString());
 
@@ -70,27 +69,40 @@ namespace PortfolioFollow.Controllers
                 {
                     var regexContent = new Regex(@">([^<]*)<");
 
-                    sb.Append($"Nome: {regexContent.Match(elements[0].Value).Value.Replace(">", "").Replace("<", "")} ");
-                    sb.Append($"Vencimento: {regexContent.Match(elements[1].Value).Value.Replace(">", "").Replace("<", "")} ");
-                    sb.Append($"Rendimento: {regexContent.Match(elements[2].Value).Value.Replace(">", "").Replace("<", "")} ");
-                    sb.Append($"Preço Unitário: {regexContent.Match(elements[3].Value).Value.Replace(">", "").Replace("<", "")} ");
-                    sb.AppendLine();
+                    var asset = new Asset
+                    {
+                        Type = AssetType.RF,
+                        Symbol = regexClean.Replace(regexContent.Match(elements[0].Value).Value, ""),
+                        SettlementDate = DateTime.Parse(regexClean.Replace(regexContent.Match(elements[1].Value).Value, "")),
+                        Prices = new List<AssetPrice>
+                        {
+                            new AssetPrice
+                            {
+                                Date = DateTime.Now,
+                                Price = decimal.Parse(regexClean.Replace(regexContent.Match(elements[3].Value).Value, ""))
+                                
+                            }
+                        },
+                        ProfitLoss = decimal.Parse(regexClean.Replace(regexContent.Match(elements[2].Value).Value, "")),
+                    };
+
+                    result.Add(asset);
                 }
             }
 
-            return sb.ToString();
+            return JsonConvert.SerializeObject(result);
         }
 
         [HttpGet]
         [Route("renda-fixa")]
-        public async Task<object> GetPrivateFixedIncomeAsync(DateTime dataInicio, DateTime dataFim, decimal percentualCdi, decimal valorAplicado)
+        public async Task<object> GetPrivateFixedIncomeAsync(decimal percentualCdi, decimal valorAplicado, DateTime dataInicio, DateTime? dataFim = null)
         {
             HttpClient client = new HttpClient();
 
             var requestReturn = await client.GetStringAsync(
                 $"https://calculadorarendafixa.com.br/calculadora/di/calculo" +
                     $"?dataInicio={dataInicio.ToString("yyyy-MM-dd")}" +
-                    $"&dataFim={dataFim.ToString("yyyy-MM-dd")}" +
+                    $"&dataFim={(dataFim ?? DateTime.Now).ToString("yyyy-MM-dd")}" +
                     $"&percentual={percentualCdi.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}" +
                     $"&valor={valorAplicado.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}");
 
@@ -98,7 +110,7 @@ namespace PortfolioFollow.Controllers
         }
 
         [HttpPost]
-        public void Post([FromBody] AssetPrice assetPrice)
+        public void Post([FromBody]Domain.AssetPrice assetPrice)
         {
             _assetPriceBusiness.Insert(assetPrice);
         }
