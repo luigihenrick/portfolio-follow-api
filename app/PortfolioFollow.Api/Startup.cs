@@ -3,8 +3,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json.Serialization;
 using Swashbuckle.AspNetCore.Swagger;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Conventions;
 using PortfolioFollow.Domain.Interfaces;
@@ -13,22 +14,19 @@ using PortfolioFollow.Service.Commons;
 using PortfolioFollow.Service.Repositories;
 using PortfolioFollow.Service.ExternalServices.FixedIncome;
 using PortfolioFollow.Service.ExternalServices.VariableIncome;
-using Newtonsoft.Json;
 using PortfolioFollow.Service.ExternalServices.TreasuryDirect;
 
 namespace PortfolioFollow
 {
     public class Startup
     {
+        public IHostingEnvironment HostingEnvironment { get; private set; }
         public IConfiguration Configuration { get; }
 
-        public Startup(IHostingEnvironment env)
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
-
-            Configuration = builder.Build();
+            this.HostingEnvironment = env;
+            this.Configuration = configuration;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -38,8 +36,6 @@ namespace PortfolioFollow
                 .AddJsonOptions(jsonOption => jsonOption.SerializerSettings.ContractResolver = new DefaultContractResolver { NamingStrategy = new SnakeCaseNamingStrategy() })
                 .AddJsonOptions(jsonOption => jsonOption.SerializerSettings.NullValueHandling = NullValueHandling.Ignore)
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
-            services.Configure<Configurations>(Configuration.GetSection("GlobalVariables"));
 
             services.AddSwaggerGen(c =>
             {

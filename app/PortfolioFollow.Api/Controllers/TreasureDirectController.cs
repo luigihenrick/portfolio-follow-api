@@ -12,15 +12,11 @@ namespace PortfolioFollow.Controllers
     [ApiController]
     public class TreasureDirectController : ControllerBase
     {
-        private readonly ITreasureDirectService _treasureDirectService;
-        private readonly IOptions<Configurations> _config;
+        private readonly ITreasureDirectService treasureDirectService;
 
-        public TreasureDirectController(
-            ITreasureDirectService treasureDirectService, 
-            IOptions<Configurations> config)
+        public TreasureDirectController(ITreasureDirectService treasureDirectService)
         {
-            _treasureDirectService = treasureDirectService;
-            _config = config;
+            this.treasureDirectService = treasureDirectService;
         }
 
         [HttpGet]
@@ -28,7 +24,7 @@ namespace PortfolioFollow.Controllers
         [Produces("application/json")]
         public async Task<IActionResult> GetTreasureDirectAsync()
         {
-            var result = await _treasureDirectService.GetAllTreasureDirectPricesAsync();
+            var result = await treasureDirectService.GetAllTreasureDirectPricesAsync();
 
             return Ok(result.Select(r => new Asset(r)));
         }

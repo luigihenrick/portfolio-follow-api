@@ -12,15 +12,11 @@ namespace PortfolioFollow.Controllers
     [ApiController]
     public class VariableIncomeController : ControllerBase
     {
-        private readonly IVariableIncomeService _variableIncomeService;
-        private readonly IOptions<Configurations> _config;
+        private readonly IVariableIncomeService variableIncomeService;
 
-        public VariableIncomeController(
-            IVariableIncomeService variableIncomeService,
-            IOptions<Configurations> config)
+        public VariableIncomeController(IVariableIncomeService variableIncomeService)
         {
-            _variableIncomeService = variableIncomeService;
-            _config = config;
+            this.variableIncomeService = variableIncomeService;
         }
 
         [HttpGet]
@@ -28,7 +24,7 @@ namespace PortfolioFollow.Controllers
         [Produces("application/json")]
         public async Task<IActionResult> GetAsync(string ticker)
         {
-            var result = await _variableIncomeService.GetVariableIncomePriceAsync(ticker);
+            var result = await variableIncomeService.GetVariableIncomePriceAsync(ticker);
 
             return Ok(new Asset(result));
         }
