@@ -9,8 +9,6 @@ using Newtonsoft.Json.Serialization;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Conventions;
 using PortfolioFollow.Domain.Interfaces;
-using PortfolioFollow.Service.Business;
-using PortfolioFollow.Service.Commons;
 using PortfolioFollow.Service.Repositories;
 using PortfolioFollow.Service.ExternalServices.FixedIncome;
 using PortfolioFollow.Service.ExternalServices.VariableIncome;
@@ -44,8 +42,7 @@ namespace PortfolioFollow
                 c.DescribeAllEnumsAsStrings();
             });
 
-            services.AddScoped<IAssetPriceBusiness, AssetPriceBusiness>();
-            services.AddScoped<IAssetPriceRepository, AssetPriceRepository>();
+            services.AddTransient<IAssetPriceRepository, AssetPriceRepository>();
 
             services.AddTransient<IFixedIncomeService, FixedIncomeService>();
             services.AddTransient<IVariableIncomeService, VariableIncomeService>();

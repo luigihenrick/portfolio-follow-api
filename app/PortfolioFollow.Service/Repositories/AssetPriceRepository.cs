@@ -1,44 +1,46 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Extensions.Options;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 using PortfolioFollow.Domain;
-using PortfolioFollow.Service.Commons;
 using PortfolioFollow.Domain.Classes;
 using PortfolioFollow.Domain.Interfaces;
+using PortfolioFollow.Service.Database;
 
 namespace PortfolioFollow.Service.Repositories
 {
     public class AssetPriceRepository : IAssetPriceRepository
     {
         public const string DatabaseName = "portfolio-follow";
-        private readonly IMongoDatabase _database;
+        private const string CollectionName = "asset-price";
+        private readonly IConfiguration config;
 
-        public AssetPriceRepository(IOptions<Configurations> config)
+        public AssetPriceRepository(IConfiguration config)
         {
-            try
-            {
-                MongoClientSettings settings = MongoClientSettings.FromUrl(new MongoUrl(config.Value.DatabaseConnection));
-                var mongoClient = new MongoClient(settings);
-                _database = mongoClient.GetDatabase(DatabaseName);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Não foi possível se conectar com o banco de dados.", ex);
-            }
+            this.config = config;
         }
 
-        public IEnumerable<AssetPrice> FindPrice(AssetType type, string symbol)
+        public async Task<IEnumerable<AssetPrice>> FindPricesAsync(AssetType type, string symbol)
         {
-            return _database.GetCollection<AssetPrice>("asset-price")
+            var database = new ConnectionFactory(config).GetDatabase();
+
+            return await database.GetCollection<AssetPrice>(CollectionName)
                 .Find(a => a.Type == type && a.Symbol == symbol)
-                .SortByDescending(a => a.Date)
-                .ToList();
+                .ToListAsync();
         }
 
-        public void Insert(AssetPrice assetPrice)
+        public async Task InsertOneAsync(AssetPrice assetPrice)
         {
-            _database.GetCollection<AssetPrice>("asset-price").InsertOne(assetPrice);
+            var database = new ConnectionFactory(config).GetDatabase();
+
+            await database.GetCollection<AssetPrice>(CollectionName).InsertOneAsync(assetPrice);
+        }
+
+        public async Task InsertManyAsync(IEnumerable<AssetPrice> assetPrice)
+        {
+            var database = new ConnectionFactory(config).GetDatabase();
+
+            await database.GetCollection<AssetPrice>(CollectionName).InsertManyAsync(assetPrice);
         }
     }
 }

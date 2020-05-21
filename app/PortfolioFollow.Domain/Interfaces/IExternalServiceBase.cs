@@ -9,7 +9,7 @@ namespace PortfolioFollow.Domain.Interfaces
     public interface IExternalServiceBase<T> where T : RequestBase 
     {
         Task<AssetPrice> GetPriceAsync(T request);
-        Task<IEnumerable<AssetPrice>> GetAllPriceAsync(T request);
+        Task<IEnumerable<AssetPrice>> GetAllPricesAsync(T request);
     }
 
     public interface IFixedIncomeService : IExternalServiceBase<FixedIncomeRequest>

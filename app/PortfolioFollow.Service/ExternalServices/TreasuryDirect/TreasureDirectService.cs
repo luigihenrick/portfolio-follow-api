@@ -16,7 +16,7 @@ namespace PortfolioFollow.Service.ExternalServices.TreasuryDirect
     {
         private const string RequestUri = "http://www.tesouro.gov.br/web/stn/tesouro-direto-precos-e-taxas-dos-titulos";
 
-        public async Task<IEnumerable<AssetPrice>> GetAllPriceAsync(TreasureDirectRequest request)
+        public async Task<IEnumerable<AssetPrice>> GetAllPricesAsync(TreasureDirectRequest request)
         {
             var result = new List<TreasureDirectPrice>();
             var client = new HttpClient();
@@ -59,7 +59,7 @@ namespace PortfolioFollow.Service.ExternalServices.TreasuryDirect
 
         public async Task<AssetPrice> GetPriceAsync(TreasureDirectRequest request)
         {
-            var all = await GetAllPriceAsync(request);
+            var all = await GetAllPricesAsync(request);
 
             return all.FirstOrDefault(a => a.Symbol == request.Name);
         }

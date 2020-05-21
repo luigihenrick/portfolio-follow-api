@@ -14,7 +14,7 @@ namespace PortfolioFollow.Service.ExternalServices.FixedIncome
 {
     public class FixedIncomeService : IFixedIncomeService
     {
-        public Task<IEnumerable<AssetPrice>> GetAllPriceAsync(FixedIncomeRequest request)
+        public Task<IEnumerable<AssetPrice>> GetAllPricesAsync(FixedIncomeRequest request)
         {
             throw new NotImplementedException();
         }

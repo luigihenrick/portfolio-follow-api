@@ -1,8 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using PortfolioFollow.Service.Commons;
 using PortfolioFollow.Api.Models;
 using PortfolioFollow.Domain.Interfaces;
 using PortfolioFollow.Domain.Classes.Requests;
@@ -13,19 +10,29 @@ namespace PortfolioFollow.Controllers
     [ApiController]
     public class VariableIncomeController : ControllerBase
     {
-        private readonly IVariableIncomeService variableIncomeService;
+        private readonly IVariableIncomeCacheService variableIncomeCacheService;
 
-        public VariableIncomeController(IVariableIncomeService variableIncomeService)
+        public VariableIncomeController(IVariableIncomeCacheService variableIncomeCacheService)
         {
-            this.variableIncomeService = variableIncomeService;
+            this.variableIncomeCacheService = variableIncomeCacheService;
         }
 
         [HttpGet]
         [Route("preco/{ticker}")]
         [Produces("application/json")]
-        public async Task<IActionResult> GetAsync(string codigo)
+        public async Task<IActionResult> GetAsync(string ticker)
         {
-            var result = await variableIncomeService.GetPriceAsync(new VariableIncomeRequest { Symbol = codigo });
+            var result = await variableIncomeCacheService.GetPriceAsync(new VariableIncomeRequest { Symbol = ticker });
+
+            return Ok(new Asset(result));
+        }
+
+        [HttpGet]
+        [Route("historico/{ticker}")]
+        [Produces("application/json")]
+        public async Task<IActionResult> GetAllAsync(string ticker)
+        {
+            var result = await variableIncomeCacheService.GetAllPricesAsync(new VariableIncomeRequest { Symbol = ticker });
 
             return Ok(new Asset(result));
         }
