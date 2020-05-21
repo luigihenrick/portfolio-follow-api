@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using PortfolioFollow.Service.Commons;
 using PortfolioFollow.Domain.Interfaces;
 using PortfolioFollow.Api.Models;
+using PortfolioFollow.Domain.Classes.Requests;
 
 namespace PortfolioFollow.Controllers
 {
@@ -24,7 +25,7 @@ namespace PortfolioFollow.Controllers
         [Produces("application/json")]
         public async Task<IActionResult> GetTreasureDirectAsync()
         {
-            var result = await treasureDirectService.GetAllTreasureDirectPricesAsync();
+            var result = await treasureDirectService.GetAllPriceAsync(new TreasureDirectRequest());
 
             return Ok(result.Select(r => new Asset(r)));
         }

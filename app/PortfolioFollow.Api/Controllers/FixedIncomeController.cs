@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using PortfolioFollow.Api.Models;
+using PortfolioFollow.Domain.Classes.Requests;
 using PortfolioFollow.Domain.Interfaces;
 
 namespace PortfolioFollow.Controllers
@@ -20,9 +21,15 @@ namespace PortfolioFollow.Controllers
         [HttpGet]
         [Route("preco")]
         [Produces("application/json")]
-        public async Task<IActionResult> GetFixedIncomeAsync(decimal percentualCdi, decimal valorAplicado, DateTime dataInicio, DateTime? dataFim = null)
+        public async Task<IActionResult> GetFixedIncomeAsync(decimal percentualCDI, decimal valorAplicado, DateTime dataInicio, DateTime? dataFim = null)
         {
-            var result = await fixedIncomeService.GetFixedIncomePriceAsync(percentualCdi, valorAplicado, dataInicio, dataFim ?? DateTime.Now);
+            var result = await fixedIncomeService.GetPriceAsync(new FixedIncomeRequest
+            {
+                CDIPercentage = percentualCDI,
+                AppliedAmount = valorAplicado,
+                StartDate = dataInicio,
+                EndDate = dataFim
+            });
 
             return Ok(new Asset(result));
         }

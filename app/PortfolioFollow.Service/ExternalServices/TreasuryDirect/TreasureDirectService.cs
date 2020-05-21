@@ -7,18 +7,21 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using PortfolioFollow.Domain;
 using PortfolioFollow.Domain.Classes;
+using PortfolioFollow.Domain.Classes.Requests;
 using PortfolioFollow.Domain.Interfaces;
 
 namespace PortfolioFollow.Service.ExternalServices.TreasuryDirect
 {
     public class TreasureDirectService : ITreasureDirectService
     {
-        public async Task<IEnumerable<AssetPrice>> GetAllTreasureDirectPricesAsync()
+        private const string RequestUri = "http://www.tesouro.gov.br/web/stn/tesouro-direto-precos-e-taxas-dos-titulos";
+
+        public async Task<IEnumerable<AssetPrice>> GetAllPriceAsync(TreasureDirectRequest request)
         {
             var result = new List<TreasureDirectPrice>();
             var client = new HttpClient();
 
-            var requestReturn = await client.GetStringAsync("http://www.tesouro.gov.br/web/stn/tesouro-direto-precos-e-taxas-dos-titulos");
+            var requestReturn = await client.GetStringAsync(RequestUri);
 
             var regexLine = new Regex(@"<tr[\s\S]*?<\/tr>");
 
@@ -52,6 +55,13 @@ namespace PortfolioFollow.Service.ExternalServices.TreasuryDirect
                 Price = r.UnitPrice,
                 Date = DateTime.Today
             });
+        }
+
+        public async Task<AssetPrice> GetPriceAsync(TreasureDirectRequest request)
+        {
+            var all = await GetAllPriceAsync(request);
+
+            return all.FirstOrDefault(a => a.Symbol == request.Name);
         }
     }
 }

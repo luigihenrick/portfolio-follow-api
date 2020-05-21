@@ -7,17 +7,19 @@ using PortfolioFollow.Domain;
 using PortfolioFollow.Domain.Interfaces;
 using PortfolioFollow.Domain.Classes;
 using Newtonsoft.Json.Converters;
+using PortfolioFollow.Domain.Classes.Requests;
+using System.Collections.Generic;
 
 namespace PortfolioFollow.Service.ExternalServices.FixedIncome
 {
     public class FixedIncomeService : IFixedIncomeService
     {
-        public Task<AssetPrice> GetFixedIncomePriceAsync(decimal percentualCdi, decimal valorAplicado, DateTime dataInicio)
+        public Task<IEnumerable<AssetPrice>> GetAllPriceAsync(FixedIncomeRequest request)
         {
-            return GetFixedIncomePriceAsync(percentualCdi, valorAplicado, dataInicio, DateTime.Now);
+            throw new NotImplementedException();
         }
 
-        public async Task<AssetPrice> GetFixedIncomePriceAsync(decimal percentualCdi, decimal valorAplicado, DateTime dataInicio, DateTime dataFim)
+        public async Task<AssetPrice> GetPriceAsync(FixedIncomeRequest request)
         {
             var client = new HttpClient();
             var builder = new UriBuilder("https://calculadorarendafixa.com.br/calculadora/di/calculo");
@@ -25,10 +27,10 @@ namespace PortfolioFollow.Service.ExternalServices.FixedIncome
 
             var query = HttpUtility.ParseQueryString(builder.Query);
 
-            query["dataInicio"] = dataInicio.ToString("yyyy-MM-dd");
-            query["dataFim"] = dataFim.ToString("yyyy-MM-dd");
-            query["percentual"] = percentualCdi.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
-            query["valor"] = valorAplicado.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+            query["dataInicio"] = request.StartDate.ToString("yyyy-MM-dd");
+            query["dataFim"] = (request.EndDate ?? DateTime.Today).ToString("yyyy-MM-dd");
+            query["percentual"] = request.CDIPercentage.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+            query["valor"] = request.AppliedAmount.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
 
             builder.Query = query.ToString();
             string url = builder.ToString();

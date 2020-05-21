@@ -11,7 +11,7 @@ namespace PortfolioFollow.Service.Repositories
 {
     public class AssetPriceRepository : IAssetPriceRepository
     {
-        public const string DatabaseName = "portifolio-follow";
+        public const string DatabaseName = "portfolio-follow";
         private readonly IMongoDatabase _database;
 
         public AssetPriceRepository(IOptions<Configurations> config)

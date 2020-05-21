@@ -15,6 +15,7 @@ using PortfolioFollow.Service.Repositories;
 using PortfolioFollow.Service.ExternalServices.FixedIncome;
 using PortfolioFollow.Service.ExternalServices.VariableIncome;
 using PortfolioFollow.Service.ExternalServices.TreasuryDirect;
+using PortfolioFollow.Service.Cache;
 
 namespace PortfolioFollow
 {
@@ -45,9 +46,12 @@ namespace PortfolioFollow
 
             services.AddScoped<IAssetPriceBusiness, AssetPriceBusiness>();
             services.AddScoped<IAssetPriceRepository, AssetPriceRepository>();
+
             services.AddTransient<IFixedIncomeService, FixedIncomeService>();
             services.AddTransient<IVariableIncomeService, VariableIncomeService>();
             services.AddTransient<ITreasureDirectService, TreasureDirectService>();
+
+            services.AddTransient<IVariableIncomeCacheService, VariableIncomeCacheService>();
 
             var pack = new ConventionPack
             {
