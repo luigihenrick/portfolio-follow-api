@@ -14,31 +14,30 @@ using PortfolioFollow.Service.Extensions;
 
 namespace PortfolioFollow.Service.Cache
 {
-    public class VariableIncomeCacheService : IVariableIncomeCacheService
+    public class TreasureDirectCacheService : ITreasureDirectCacheService
     {
         private readonly IConfiguration config;
-        private readonly IVariableIncomeService variableIncomeService;
+        private readonly ITreasureDirectService variableIncomeService;
         private readonly IAssetPriceRepository assetPriceRepository;
 
-        public VariableIncomeCacheService(IConfiguration config, IVariableIncomeService variableIncomeService, IAssetPriceRepository assetPriceRepository)
+        public TreasureDirectCacheService(IConfiguration config, ITreasureDirectService treasureDirectService, IAssetPriceRepository assetPriceRepository)
         {
             this.config = config;
-            this.variableIncomeService = variableIncomeService;
+            this.variableIncomeService = treasureDirectService;
             this.assetPriceRepository = assetPriceRepository;
         }
 
-        public async Task<IEnumerable<AssetPrice>> GetAllPricesAsync(VariableIncomeRequest request)
+        public async Task<IEnumerable<AssetPrice>> GetAllPricesAsync(TreasureDirectRequest request)
         {
-            var assetPricesInDb = await assetPriceRepository.FindPricesBySymbolAsync(request.Type, request.Symbol);
+            var assetPricesInDb = await assetPriceRepository.FindPricesByTypeAsync(request.Type);
 
-            var lastPriceDate = assetPricesInDb.FirstOrDefault().Date;
+            var lastPrice = assetPricesInDb.FirstOrDefault();
 
-            var daysWithoutPrice = lastPriceDate.Subtract(lastPriceDate.GetLastWorkDay()).Days;
+            var daysWithoutPrice = lastPrice == null ? 1 : lastPrice.Date.Subtract(lastPrice.Date.GetLastWorkDay()).Days;
 
-            if (daysWithoutPrice >= 1 || assetPricesInDb.Count() <= 100)
+            if (daysWithoutPrice >= 1)
             {
                 var allPrices = await variableIncomeService.GetAllPricesAsync(request);
-
 
                 if (allPrices.Any())
                 {
@@ -50,12 +49,12 @@ namespace PortfolioFollow.Service.Cache
                 return allPrices;
             }
 
-            return assetPricesInDb;
+            return assetPricesInDb.Where(a => a.Date == lastPrice.Date);
         }
 
-        public async Task<AssetPrice> GetPriceAsync(VariableIncomeRequest request)
+        public async Task<AssetPrice> GetPriceAsync(TreasureDirectRequest request)
         {
-            var assetPricesInDb = await assetPriceRepository.FindPricesBySymbolAsync(request.Type, request.Symbol);
+            var assetPricesInDb = await assetPriceRepository.FindPricesBySymbolAsync(request.Type, request.Name);
 
             var lastPrice = assetPricesInDb.FirstOrDefault();
 

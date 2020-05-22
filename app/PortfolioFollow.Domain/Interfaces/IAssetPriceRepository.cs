@@ -9,6 +9,7 @@ namespace PortfolioFollow.Domain.Interfaces
     {
         Task InsertOneAsync(AssetPrice assetPrice);
         Task InsertManyAsync(IEnumerable<AssetPrice> assetPrices);
-        Task<IEnumerable<AssetPrice>> FindPricesAsync(AssetType type, string symbol);
+        Task<IEnumerable<AssetPrice>> FindPricesByTypeAsync(AssetType type);
+        Task<IEnumerable<AssetPrice>> FindPricesBySymbolAsync(AssetType type, string symbol);
     }
 }

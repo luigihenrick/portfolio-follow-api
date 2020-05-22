@@ -11,19 +11,29 @@ namespace PortfolioFollow.Controllers
     [ApiController]
     public class TreasureDirectController : ControllerBase
     {
-        private readonly ITreasureDirectService treasureDirectService;
+        private readonly ITreasureDirectCacheService treasureDirectCacheService;
 
-        public TreasureDirectController(ITreasureDirectService treasureDirectService)
+        public TreasureDirectController(ITreasureDirectCacheService treasureDirectCacheService)
         {
-            this.treasureDirectService = treasureDirectService;
+            this.treasureDirectCacheService = treasureDirectCacheService;
         }
 
         [HttpGet]
-        [Route("preco")]
+        [Route("preco/{nome}")]
+        [Produces("application/json")]
+        public async Task<IActionResult> GetTreasureDirectAsync(string nome)
+        {
+            var result = await treasureDirectCacheService.GetPriceAsync(new TreasureDirectRequest { Name = nome });
+
+            return Ok(new Asset(result));
+        }
+
+        [HttpGet]
+        [Route("preco/disponiveis")]
         [Produces("application/json")]
         public async Task<IActionResult> GetTreasureDirectAsync()
         {
-            var result = await treasureDirectService.GetAllPricesAsync(new TreasureDirectRequest());
+            var result = await treasureDirectCacheService.GetAllPricesAsync(new TreasureDirectRequest());
 
             return Ok(result.Select(r => new Asset(r)));
         }

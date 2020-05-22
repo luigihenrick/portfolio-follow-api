@@ -49,6 +49,7 @@ namespace PortfolioFollow
             services.AddTransient<ITreasureDirectService, TreasureDirectService>();
 
             services.AddTransient<IVariableIncomeCacheService, VariableIncomeCacheService>();
+            services.AddTransient<ITreasureDirectCacheService, TreasureDirectCacheService>();
 
             var pack = new ConventionPack
             {

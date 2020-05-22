@@ -20,12 +20,23 @@ namespace PortfolioFollow.Service.Repositories
             this.config = config;
         }
 
-        public async Task<IEnumerable<AssetPrice>> FindPricesAsync(AssetType type, string symbol)
+        public async Task<IEnumerable<AssetPrice>> FindPricesByTypeAsync(AssetType type)
         {
             var database = new ConnectionFactory(config).GetDatabase();
 
             return await database.GetCollection<AssetPrice>(CollectionName)
-                .Find(a => a.Type == type && a.Symbol == symbol)
+                .Find(a => a.Type == type)
+                .SortByDescending(a => a.Date)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<AssetPrice>> FindPricesBySymbolAsync(AssetType type, string symbol)
+        {
+            var database = new ConnectionFactory(config).GetDatabase();
+
+            return await database.GetCollection<AssetPrice>(CollectionName)
+                .Find(a => a.Type == type && a.Symbol.Contains(symbol))
+                .SortByDescending(a => a.Date)
                 .ToListAsync();
         }
 
