@@ -15,10 +15,16 @@ using PortfolioFollow.Domain.Classes.Requests;
 
 namespace PortfolioFollow.Service.ExternalServices.VariableIncome
 {
+    public enum OutputSize
+    {
+        Full,
+        Compact
+    }
+
     public class VariableIncomeService : IVariableIncomeService
     {
         private readonly IConfiguration config;
-        private string outputSize { get; set; }
+        private OutputSize outputSize { get; set; }
 
         public VariableIncomeService(IConfiguration config)
         {
@@ -27,7 +33,7 @@ namespace PortfolioFollow.Service.ExternalServices.VariableIncome
 
         public async Task<AssetPrice> GetPriceAsync(VariableIncomeRequest request)
         {
-            this.outputSize = "compact";
+            this.outputSize = OutputSize.Compact;
 
             var prices = await GetAllPricesAsync(request);
 
@@ -44,7 +50,7 @@ namespace PortfolioFollow.Service.ExternalServices.VariableIncome
 
             query["apikey"] = this.config["AlphavantageKey"];
             query["function"] = "TIME_SERIES_DAILY";
-            query["outputsize"] = string.IsNullOrWhiteSpace(outputSize) ? "full" : outputSize;
+            query["outputsize"] = this.outputSize.ToString().ToLower();
             query["symbol"] = request.Symbol;
 
             builder.Query = query.ToString();

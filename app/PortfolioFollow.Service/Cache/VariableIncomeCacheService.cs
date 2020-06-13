@@ -35,16 +35,28 @@ namespace PortfolioFollow.Service.Cache
 
             var daysWithoutPrice = lastPriceDate.Subtract(lastPriceDate.GetLastWorkDay()).Days;
 
-            if (daysWithoutPrice >= 1 || assetPricesInDb.Count() <= 100)
+            if(daysWithoutPrice == 1)
+            {
+                var price = await variableIncomeService.GetPriceAsync(request);
+
+                if (price.Price > 0)
+                {
+                    _ = assetPriceRepository.InsertOneAsync(price);
+                }
+
+                assetPricesInDb.Append(price);
+
+                return assetPricesInDb;
+            }
+            else if (daysWithoutPrice >= 2 || assetPricesInDb.Count() <= 100)
             {
                 var allPrices = await variableIncomeService.GetAllPricesAsync(request);
-
 
                 if (allPrices.Any())
                 {
                     var assetPricesToInsert = allPrices.Except(assetPricesInDb);
 
-                    await assetPriceRepository.InsertManyAsync(assetPricesToInsert);
+                    _ = assetPriceRepository.InsertManyAsync(assetPricesToInsert);
                 }
 
                 return allPrices;
@@ -59,7 +71,7 @@ namespace PortfolioFollow.Service.Cache
 
             var lastPrice = assetPricesInDb.FirstOrDefault();
 
-            var daysWithoutPrice = lastPrice == null ? 1 : lastPrice.Date.Subtract(lastPrice.Date.GetLastWorkDay()).Days;
+            var daysWithoutPrice = lastPrice == null ? 1 : DateTime.Today.GetLastWorkDay().Subtract(lastPrice.Date.GetLastWorkDay()).Days;
 
             if (daysWithoutPrice >= 1)
             {
