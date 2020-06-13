@@ -14,6 +14,14 @@ using PortfolioFollow.Service.ExternalServices.FixedIncome;
 using PortfolioFollow.Service.ExternalServices.VariableIncome;
 using PortfolioFollow.Service.ExternalServices.TreasuryDirect;
 using PortfolioFollow.Service.Cache;
+using Hangfire;
+using MongoDB.Driver;
+using Hangfire.Mongo;
+using Hangfire.Mongo.Migration.Strategies;
+using Hangfire.Mongo.Migration.Strategies.Backup;
+using System;
+using Microsoft.AspNetCore.Http;
+using PortfolioFollow.Domain.Classes.Requests;
 
 namespace PortfolioFollow
 {
@@ -57,6 +65,22 @@ namespace PortfolioFollow
             };
 
             ConventionRegistry.Register("EnumStringConvention", pack, t => true);
+
+            services.AddHangfire(config =>
+            {
+                var mongoUrlBuilder = new MongoUrlBuilder(Configuration["DatabaseConnection"]);
+                var mongoClient = new MongoClient(mongoUrlBuilder.ToMongoUrl());
+
+                var storageOptions = new MongoStorageOptions
+                {
+                    MigrationOptions = new MongoMigrationOptions
+                    {
+                        MigrationStrategy = new MigrateMongoMigrationStrategy(),
+                        BackupStrategy = new CollectionMongoBackupStrategy()
+                    }
+                };
+                config.UseMongoStorage(mongoClient, mongoUrlBuilder.DatabaseName, storageOptions);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -73,11 +97,23 @@ namespace PortfolioFollow
 
             app.UseHttpsRedirection();
             app.UseMvc();
+            app.UseHangfireServer();
+            app.UseHangfireDashboard();
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v2/swagger.json", "PortfolioFollow Api V2");
+            });
+
+            var serviceProvider = app.ApplicationServices;
+            var treasureDirectCacheService = serviceProvider.GetService<ITreasureDirectCacheService>();
+
+            app.Run(async (context) => 
+            {
+                await context.Response.WriteAsync("Started");
+                RecurringJob.AddOrUpdate(() => Console.WriteLine("\n I'm Alive \n"), "*/15 * * * *");
+                RecurringJob.AddOrUpdate(() => treasureDirectCacheService.GetAllPricesAsync(new TreasureDirectRequest()), Cron.Daily(08, 00));
             });
         }
     }

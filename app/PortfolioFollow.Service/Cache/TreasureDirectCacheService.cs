@@ -16,13 +16,11 @@ namespace PortfolioFollow.Service.Cache
 {
     public class TreasureDirectCacheService : ITreasureDirectCacheService
     {
-        private readonly IConfiguration config;
         private readonly ITreasureDirectService variableIncomeService;
         private readonly IAssetPriceRepository assetPriceRepository;
 
-        public TreasureDirectCacheService(IConfiguration config, ITreasureDirectService treasureDirectService, IAssetPriceRepository assetPriceRepository)
+        public TreasureDirectCacheService(ITreasureDirectService treasureDirectService, IAssetPriceRepository assetPriceRepository)
         {
-            this.config = config;
             this.variableIncomeService = treasureDirectService;
             this.assetPriceRepository = assetPriceRepository;
         }
@@ -43,7 +41,7 @@ namespace PortfolioFollow.Service.Cache
                 {
                     var assetPricesToInsert = allPrices.Except(assetPricesInDb);
 
-                    await assetPriceRepository.InsertManyAsync(assetPricesToInsert);
+                    _ = assetPriceRepository.InsertManyAsync(assetPricesToInsert);
                 }
 
                 return allPrices;
@@ -65,7 +63,7 @@ namespace PortfolioFollow.Service.Cache
                 var actualPrice = await variableIncomeService.GetPriceAsync(request);
 
                 if(actualPrice != null)
-                    await assetPriceRepository.InsertOneAsync(actualPrice);
+                    _ = assetPriceRepository.InsertOneAsync(actualPrice);
 
                 return actualPrice;
             }

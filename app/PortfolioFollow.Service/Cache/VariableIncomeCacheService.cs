@@ -16,13 +16,11 @@ namespace PortfolioFollow.Service.Cache
 {
     public class VariableIncomeCacheService : IVariableIncomeCacheService
     {
-        private readonly IConfiguration config;
         private readonly IVariableIncomeService variableIncomeService;
         private readonly IAssetPriceRepository assetPriceRepository;
 
-        public VariableIncomeCacheService(IConfiguration config, IVariableIncomeService variableIncomeService, IAssetPriceRepository assetPriceRepository)
+        public VariableIncomeCacheService(IVariableIncomeService variableIncomeService, IAssetPriceRepository assetPriceRepository)
         {
-            this.config = config;
             this.variableIncomeService = variableIncomeService;
             this.assetPriceRepository = assetPriceRepository;
         }
