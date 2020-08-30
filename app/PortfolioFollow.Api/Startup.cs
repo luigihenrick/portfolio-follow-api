@@ -115,7 +115,7 @@ namespace PortfolioFollow
 
             app.Run(async (context) => 
             {
-                await context.Response.WriteAsync("Started");
+                //await context.Response.WriteAsync("Started");
                 RecurringJob.AddOrUpdate(() => Console.WriteLine("\n I'm Alive \n"), "*/15 * * * *");
                 RecurringJob.AddOrUpdate(() => treasureDirectCacheService.GetAllPricesAsync(new TreasureDirectRequest()), Cron.Daily(08, 00));
             });
