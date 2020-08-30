@@ -22,6 +22,7 @@ using Hangfire.Mongo.Migration.Strategies.Backup;
 using System;
 using Microsoft.AspNetCore.Http;
 using PortfolioFollow.Domain.Classes.Requests;
+using PortfolioFollow.Api.Middlewares;
 
 namespace PortfolioFollow
 {
@@ -98,7 +99,10 @@ namespace PortfolioFollow
             app.UseHttpsRedirection();
             app.UseMvc();
             app.UseHangfireServer();
-            app.UseHangfireDashboard();
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions
+            {
+                Authorization = new[] { new HangfireAuthorizationFilter() }
+            });
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
