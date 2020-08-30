@@ -42,7 +42,7 @@ namespace PortfolioFollow.Service.ExternalServices.TreasuryDirect
             return result.Select(r => new AssetPrice
             {
                 Type = AssetType.TD,
-                Symbol = r.Name,1
+                Symbol = r.Name,
                 Price = r.UnitPrice,
                 Date = DateTime.Today
             });
