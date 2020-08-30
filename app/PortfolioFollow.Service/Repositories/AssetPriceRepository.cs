@@ -5,7 +5,6 @@ using MongoDB.Driver;
 using PortfolioFollow.Domain;
 using PortfolioFollow.Domain.Classes;
 using PortfolioFollow.Domain.Interfaces;
-using PortfolioFollow.Service.Database;
 
 namespace PortfolioFollow.Service.Repositories
 {

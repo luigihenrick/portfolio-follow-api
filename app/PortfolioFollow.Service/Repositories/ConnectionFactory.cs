@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace PortfolioFollow.Service.Database
+namespace PortfolioFollow.Service.Repositories
 {
     public class ConnectionFactory
     {

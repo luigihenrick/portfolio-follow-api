@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using PortfolioFollow.Domain;
-using PortfolioFollow.Domain.Classes;
 using PortfolioFollow.Domain.Classes.Requests;
 using PortfolioFollow.Domain.Interfaces;
-using PortfolioFollow.Service.Database;
-using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 using System.Linq;
 using PortfolioFollow.Service.Extensions;
@@ -31,7 +27,7 @@ namespace PortfolioFollow.Service.Cache
 
             var lastPrice = assetPricesInDb.FirstOrDefault();
 
-            var daysWithoutPrice = lastPrice == null ? 1 : lastPrice.Date.Subtract(lastPrice.Date.GetLastWorkDay()).Days;
+            var daysWithoutPrice = lastPrice == null ? 1 : DateTime.Today.GetLastWorkDay().Subtract(lastPrice.Date).Days;
 
             if (daysWithoutPrice >= 1)
             {

@@ -8,7 +8,7 @@ namespace PortfolioFollow.Service.ExternalServices.TreasuryDirect
     {
         public string Name { get; set; }
         public DateTime MaturityDate { get; set; }
-        public string ProfitabilityRate { get; set; }
+        public decimal ProfitabilityRate { get; set; }
         public decimal UnitPrice { get; set; }
     }
 }
