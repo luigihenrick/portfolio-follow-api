@@ -21,7 +21,7 @@ namespace PortfolioFollow.Service.Cache
             this.assetPriceRepository = assetPriceRepository;
         }
 
-        public async Task<IEnumerable<AssetPrice>> GetAllPricesAsync(TreasureDirectRequest request)
+        public async Task<IEnumerable<AssetPrice>> GetAllPricesAsync(TreasureDirectServiceRequest request)
         {
             var assetPricesInDb = await assetPriceRepository.FindPricesByTypeAsync(request.Type);
 
@@ -46,7 +46,7 @@ namespace PortfolioFollow.Service.Cache
             return assetPricesInDb.Where(a => a.Date == lastPrice.Date);
         }
 
-        public async Task<AssetPrice> GetPriceAsync(TreasureDirectRequest request)
+        public async Task<AssetPrice> GetPriceAsync(TreasureDirectServiceRequest request)
         {
             var assetPricesInDb = await assetPriceRepository.FindPricesBySymbolAsync(request.Type, request.Name);
 

@@ -12,12 +12,12 @@ namespace PortfolioFollow.Domain.Interfaces
         Task<IEnumerable<AssetPrice>> GetAllPricesAsync(T request);
     }
 
-    public interface IFixedIncomeService : IExternalServiceBase<FixedIncomeRequest>
+    public interface IFixedIncomeService : IExternalServiceBase<FixedIncomeServiceRequest>
     { }
 
-    public interface ITreasureDirectService : IExternalServiceBase<TreasureDirectRequest>
+    public interface ITreasureDirectService : IExternalServiceBase<TreasureDirectServiceRequest>
     { }
 
-    public interface IVariableIncomeService : IExternalServiceBase<VariableIncomeRequest>
+    public interface IVariableIncomeService : IExternalServiceBase<VariableIncomeServiceRequest>
     { }
 }

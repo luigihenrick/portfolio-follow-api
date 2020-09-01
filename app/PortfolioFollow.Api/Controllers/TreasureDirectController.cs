@@ -23,7 +23,7 @@ namespace PortfolioFollow.Controllers
         [Produces("application/json")]
         public async Task<IActionResult> GetTreasureDirectAsync(string nome)
         {
-            var result = await treasureDirectCacheService.GetPriceAsync(new TreasureDirectRequest { Name = nome });
+            var result = await treasureDirectCacheService.GetPriceAsync(new TreasureDirectServiceRequest { Name = nome });
 
             return Ok(new Asset(result));
         }
@@ -33,7 +33,7 @@ namespace PortfolioFollow.Controllers
         [Produces("application/json")]
         public async Task<IActionResult> GetTreasureDirectAsync()
         {
-            var result = await treasureDirectCacheService.GetAllPricesAsync(new TreasureDirectRequest());
+            var result = await treasureDirectCacheService.GetAllPricesAsync(new TreasureDirectServiceRequest());
 
             return Ok(result.Select(r => new Asset(r)));
         }

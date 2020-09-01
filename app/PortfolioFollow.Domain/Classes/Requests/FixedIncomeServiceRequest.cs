@@ -4,9 +4,9 @@ using System.Text;
 
 namespace PortfolioFollow.Domain.Classes.Requests
 {
-    public class FixedIncomeRequest : RequestBase
+    public class FixedIncomeServiceRequest : RequestBase
     {
-        public FixedIncomeRequest() : base(AssetType.RF)
+        public FixedIncomeServiceRequest() : base(AssetType.RF)
         { }
 
         public decimal CDIPercentage { get; set; }

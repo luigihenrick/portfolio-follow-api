@@ -5,12 +5,12 @@ using System.Text.RegularExpressions;
 
 namespace PortfolioFollow.Domain.Classes.Requests
 {
-    public class VariableIncomeRequest : RequestBase
+    public class VariableIncomeServiceRequest : RequestBase
     {
         private readonly Regex regexBrStock = new Regex(@"[a-zA-Z]{4,4}[0-9]{1,1}");
         private string symbol;
 
-        public VariableIncomeRequest() : base(AssetType.RV)
+        public VariableIncomeServiceRequest() : base(AssetType.RV)
         { }
 
         public string Symbol

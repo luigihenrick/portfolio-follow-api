@@ -23,7 +23,7 @@ namespace PortfolioFollow.Controllers
         [Produces("application/json")]
         public async Task<IActionResult> GetFixedIncomeAsync(decimal percentualCDI, decimal valorAplicado, DateTime dataInicio, DateTime? dataFim = null)
         {
-            var result = await fixedIncomeService.GetPriceAsync(new FixedIncomeRequest
+            var result = await fixedIncomeService.GetPriceAsync(new FixedIncomeServiceRequest
             {
                 CDIPercentage = percentualCDI,
                 AppliedAmount = valorAplicado,

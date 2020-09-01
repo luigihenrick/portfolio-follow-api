@@ -4,9 +4,9 @@ using System.Text;
 
 namespace PortfolioFollow.Domain.Classes.Requests
 {
-    public class TreasureDirectRequest : RequestBase
+    public class TreasureDirectServiceRequest : RequestBase
     {
-        public TreasureDirectRequest() : base(AssetType.TD)
+        public TreasureDirectServiceRequest() : base(AssetType.TD)
         { }
 
         public string Name { get; set; }

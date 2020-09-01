@@ -19,7 +19,7 @@ namespace PortfolioFollow.Service.ExternalServices.TreasuryDirect
         private const string RequestUri = "https://www.tesourodireto.com.br/json/br/com/b3/tesourodireto/service/api/treasurybondsinfo.json";
         private const string RequestUriOld = "http://www.tesouro.gov.br/web/stn/tesouro-direto-precos-e-taxas-dos-titulos";
 
-        public async Task<IEnumerable<AssetPrice>> GetAllPricesAsync(TreasureDirectRequest request)
+        public async Task<IEnumerable<AssetPrice>> GetAllPricesAsync(TreasureDirectServiceRequest request)
         {
             var result = new List<TreasureDirectPrice>();
             var client = new HttpClient();
@@ -48,7 +48,7 @@ namespace PortfolioFollow.Service.ExternalServices.TreasuryDirect
             });
         }
 
-        public async Task<IEnumerable<AssetPrice>> GetAllPricesOldAsync(TreasureDirectRequest request)
+        public async Task<IEnumerable<AssetPrice>> GetAllPricesOldAsync(TreasureDirectServiceRequest request)
         {
             var result = new List<TreasureDirectPrice>();
             var client = new HttpClient();
@@ -89,7 +89,7 @@ namespace PortfolioFollow.Service.ExternalServices.TreasuryDirect
             });
         }
 
-        public async Task<AssetPrice> GetPriceAsync(TreasureDirectRequest request)
+        public async Task<AssetPrice> GetPriceAsync(TreasureDirectServiceRequest request)
         {
             var all = await GetAllPricesAsync(request);
 

@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace PortfolioFollow.Domain.Interfaces
 {
-    public interface IFixedIncomeCacheService : IExternalServiceBase<FixedIncomeRequest>
+    public interface IFixedIncomeCacheService : IExternalServiceBase<FixedIncomeServiceRequest>
     { }
 
-    public interface ITreasureDirectCacheService : IExternalServiceBase<TreasureDirectRequest>
+    public interface ITreasureDirectCacheService : IExternalServiceBase<TreasureDirectServiceRequest>
     { }
 
-    public interface IVariableIncomeCacheService : IExternalServiceBase<VariableIncomeRequest>
+    public interface IVariableIncomeCacheService : IExternalServiceBase<VariableIncomeServiceRequest>
     { }
 }

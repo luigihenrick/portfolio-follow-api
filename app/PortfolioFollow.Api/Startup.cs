@@ -117,7 +117,7 @@ namespace PortfolioFollow
             {
                 //await context.Response.WriteAsync("Started");
                 RecurringJob.AddOrUpdate(() => Console.WriteLine("\n I'm Alive \n"), "*/15 * * * *");
-                RecurringJob.AddOrUpdate(() => treasureDirectCacheService.GetAllPricesAsync(new TreasureDirectRequest()), Cron.Daily(08, 00));
+                RecurringJob.AddOrUpdate(() => treasureDirectCacheService.GetAllPricesAsync(new TreasureDirectServiceRequest()), Cron.Daily(08, 00));
             });
         }
     }

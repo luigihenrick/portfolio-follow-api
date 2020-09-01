@@ -14,12 +14,12 @@ namespace PortfolioFollow.Service.ExternalServices.FixedIncome
 {
     public class FixedIncomeService : IFixedIncomeService
     {
-        public Task<IEnumerable<AssetPrice>> GetAllPricesAsync(FixedIncomeRequest request)
+        public Task<IEnumerable<AssetPrice>> GetAllPricesAsync(FixedIncomeServiceRequest request)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<AssetPrice> GetPriceAsync(FixedIncomeRequest request)
+        public async Task<AssetPrice> GetPriceAsync(FixedIncomeServiceRequest request)
         {
             var client = new HttpClient();
             var builder = new UriBuilder("https://calculadorarendafixa.com.br/calculadora/di/calculo");

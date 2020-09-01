@@ -31,7 +31,7 @@ namespace PortfolioFollow.Service.ExternalServices.VariableIncome
             this.config = config;
         }
 
-        public async Task<AssetPrice> GetPriceAsync(VariableIncomeRequest request)
+        public async Task<AssetPrice> GetPriceAsync(VariableIncomeServiceRequest request)
         {
             this.outputSize = OutputSize.Compact;
 
@@ -40,7 +40,7 @@ namespace PortfolioFollow.Service.ExternalServices.VariableIncome
             return prices.FirstOrDefault();
         }
 
-        public async Task<IEnumerable<AssetPrice>> GetAllPricesAsync(VariableIncomeRequest request)
+        public async Task<IEnumerable<AssetPrice>> GetAllPricesAsync(VariableIncomeServiceRequest request)
         {
             var client = new HttpClient();
             var builder = new UriBuilder("https://www.alphavantage.co/query");

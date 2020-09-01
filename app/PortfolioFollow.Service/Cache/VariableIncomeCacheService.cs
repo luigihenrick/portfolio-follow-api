@@ -21,7 +21,7 @@ namespace PortfolioFollow.Service.Cache
             this.assetPriceRepository = assetPriceRepository;
         }
 
-        public async Task<IEnumerable<AssetPrice>> GetAllPricesAsync(VariableIncomeRequest request)
+        public async Task<IEnumerable<AssetPrice>> GetAllPricesAsync(VariableIncomeServiceRequest request)
         {
             var assetPricesInDb = await assetPriceRepository.FindPricesBySymbolAsync(request.Type, request.Symbol);
 
@@ -59,7 +59,7 @@ namespace PortfolioFollow.Service.Cache
             return assetPricesInDb;
         }
 
-        public async Task<AssetPrice> GetPriceAsync(VariableIncomeRequest request)
+        public async Task<AssetPrice> GetPriceAsync(VariableIncomeServiceRequest request)
         {
             var assetPricesInDb = await assetPriceRepository.FindPricesBySymbolAsync(request.Type, request.Symbol);
 

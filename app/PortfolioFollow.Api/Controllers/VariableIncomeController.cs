@@ -22,7 +22,7 @@ namespace PortfolioFollow.Controllers
         [Produces("application/json")]
         public async Task<IActionResult> GetAsync(string ticker)
         {
-            var result = await variableIncomeCacheService.GetPriceAsync(new VariableIncomeRequest { Symbol = ticker });
+            var result = await variableIncomeCacheService.GetPriceAsync(new VariableIncomeServiceRequest { Symbol = ticker });
 
             return Ok(new Asset(result));
         }
@@ -32,7 +32,7 @@ namespace PortfolioFollow.Controllers
         [Produces("application/json")]
         public async Task<IActionResult> GetAllAsync(string ticker)
         {
-            var result = await variableIncomeCacheService.GetAllPricesAsync(new VariableIncomeRequest { Symbol = ticker });
+            var result = await variableIncomeCacheService.GetAllPricesAsync(new VariableIncomeServiceRequest { Symbol = ticker });
 
             return Ok(new Asset(result));
         }
