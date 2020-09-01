@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PortfolioFollow.Api.Models;
 using PortfolioFollow.Domain.Interfaces;
 using PortfolioFollow.Domain.Classes.Requests;
+using AutoMapper;
 
 namespace PortfolioFollow.Controllers
 {
@@ -11,28 +12,30 @@ namespace PortfolioFollow.Controllers
     public class VariableIncomeController : ControllerBase
     {
         private readonly IVariableIncomeCacheService variableIncomeCacheService;
+        private readonly IMapper mapper;
 
-        public VariableIncomeController(IVariableIncomeCacheService variableIncomeCacheService)
+        public VariableIncomeController(IVariableIncomeCacheService variableIncomeCacheService, IMapper mapper)
         {
             this.variableIncomeCacheService = variableIncomeCacheService;
+            this.mapper = mapper;
         }
 
         [HttpGet]
-        [Route("preco/{ticker}")]
+        [Route("preco")]
         [Produces("application/json")]
-        public async Task<IActionResult> GetAsync(string ticker)
+        public async Task<IActionResult> GetAsync([FromQuery] VariableIncomeRequest request)
         {
-            var result = await variableIncomeCacheService.GetPriceAsync(new VariableIncomeServiceRequest { Symbol = ticker });
+            var result = await variableIncomeCacheService.GetPriceAsync(mapper.Map<VariableIncomeServiceRequest>(request));
 
             return Ok(new Asset(result));
         }
 
         [HttpGet]
-        [Route("historico/{ticker}")]
+        [Route("historico")]
         [Produces("application/json")]
-        public async Task<IActionResult> GetAllAsync(string ticker)
+        public async Task<IActionResult> GetAllAsync([FromQuery] VariableIncomeRequest request)
         {
-            var result = await variableIncomeCacheService.GetAllPricesAsync(new VariableIncomeServiceRequest { Symbol = ticker });
+            var result = await variableIncomeCacheService.GetAllPricesAsync(mapper.Map<VariableIncomeServiceRequest>(request));
 
             return Ok(new Asset(result));
         }

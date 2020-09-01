@@ -23,6 +23,8 @@ using System;
 using Microsoft.AspNetCore.Http;
 using PortfolioFollow.Domain.Classes.Requests;
 using PortfolioFollow.Api.Middlewares;
+using AutoMapper;
+using PortfolioFollow.Api.Common;
 
 namespace PortfolioFollow
 {
@@ -40,6 +42,10 @@ namespace PortfolioFollow
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            RegisterServices(services);
+            DatabaseConfiguration();
+            HangfireConfiguration(services);
+
             services.AddMvc()
                 .AddJsonOptions(jsonOption => jsonOption.SerializerSettings.ContractResolver = new DefaultContractResolver { NamingStrategy = new SnakeCaseNamingStrategy() })
                 .AddJsonOptions(jsonOption => jsonOption.SerializerSettings.NullValueHandling = NullValueHandling.Ignore)
@@ -50,23 +56,10 @@ namespace PortfolioFollow
                 c.SwaggerDoc("v2", new Info { Title = "PortfolioFollow Api", Version = "v2" });
                 c.DescribeAllEnumsAsStrings();
             });
+        }
 
-            services.AddTransient<IAssetPriceRepository, AssetPriceRepository>();
-
-            services.AddTransient<IFixedIncomeService, FixedIncomeService>();
-            services.AddTransient<IVariableIncomeService, VariableIncomeService>();
-            services.AddTransient<ITreasureDirectService, TreasureDirectService>();
-
-            services.AddTransient<IVariableIncomeCacheService, VariableIncomeCacheService>();
-            services.AddTransient<ITreasureDirectCacheService, TreasureDirectCacheService>();
-
-            var pack = new ConventionPack
-            {
-                new EnumRepresentationConvention(BsonType.String)
-            };
-
-            ConventionRegistry.Register("EnumStringConvention", pack, t => true);
-
+        private void HangfireConfiguration(IServiceCollection services)
+        {
             services.AddHangfire(config =>
             {
                 var mongoUrlBuilder = new MongoUrlBuilder(Configuration["DatabaseConnection"]);
@@ -82,6 +75,37 @@ namespace PortfolioFollow
                 };
                 config.UseMongoStorage(mongoClient, mongoUrlBuilder.DatabaseName, storageOptions);
             });
+        }
+
+        private static void DatabaseConfiguration()
+        {
+            var pack = new ConventionPack
+            {
+                new EnumRepresentationConvention(BsonType.String)
+            };
+
+            ConventionRegistry.Register("EnumStringConvention", pack, t => true);
+        }
+
+        private static void RegisterServices(IServiceCollection services)
+        {
+            services.AddTransient<IAssetPriceRepository, AssetPriceRepository>();
+
+            services.AddTransient<IFixedIncomeService, FixedIncomeService>();
+            services.AddTransient<IVariableIncomeService, VariableIncomeService>();
+            services.AddTransient<ITreasureDirectService, TreasureDirectService>();
+
+            services.AddTransient<IVariableIncomeCacheService, VariableIncomeCacheService>();
+            services.AddTransient<ITreasureDirectCacheService, TreasureDirectCacheService>();
+
+            var mapperConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new AutoMapperProfile());
+            });
+
+            IMapper mapper = mapperConfig.CreateMapper();
+            
+            services.AddSingleton(mapper);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

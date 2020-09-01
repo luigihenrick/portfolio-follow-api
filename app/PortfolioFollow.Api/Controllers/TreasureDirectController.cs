@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using PortfolioFollow.Domain.Interfaces;
 using PortfolioFollow.Api.Models;
 using PortfolioFollow.Domain.Classes.Requests;
+using AutoMapper;
 
 namespace PortfolioFollow.Controllers
 {
@@ -12,24 +13,26 @@ namespace PortfolioFollow.Controllers
     public class TreasureDirectController : ControllerBase
     {
         private readonly ITreasureDirectCacheService treasureDirectCacheService;
+        private readonly IMapper mapper;
 
-        public TreasureDirectController(ITreasureDirectCacheService treasureDirectCacheService)
+        public TreasureDirectController(ITreasureDirectCacheService treasureDirectCacheService, IMapper mapper)
         {
             this.treasureDirectCacheService = treasureDirectCacheService;
+            this.mapper = mapper;
         }
 
         [HttpGet]
-        [Route("preco/{nome}")]
+        [Route("preco")]
         [Produces("application/json")]
-        public async Task<IActionResult> GetTreasureDirectAsync(string nome)
+        public async Task<IActionResult> GetTreasureDirectAsync([FromQuery] TreasureDirectRequest request)
         {
-            var result = await treasureDirectCacheService.GetPriceAsync(new TreasureDirectServiceRequest { Name = nome });
+            var result = await treasureDirectCacheService.GetPriceAsync(mapper.Map<TreasureDirectServiceRequest>(request));
 
             return Ok(new Asset(result));
         }
 
         [HttpGet]
-        [Route("preco/disponiveis")]
+        [Route("disponiveis")]
         [Produces("application/json")]
         public async Task<IActionResult> GetTreasureDirectAsync()
         {

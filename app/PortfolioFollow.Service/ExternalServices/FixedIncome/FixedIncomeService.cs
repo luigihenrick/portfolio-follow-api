@@ -27,8 +27,8 @@ namespace PortfolioFollow.Service.ExternalServices.FixedIncome
 
             var query = HttpUtility.ParseQueryString(builder.Query);
 
-            query["dataInicio"] = request.StartDate.ToString("yyyy-MM-dd");
-            query["dataFim"] = (request.EndDate ?? DateTime.Today).ToString("yyyy-MM-dd");
+            query["dataInicio"] = request.IssueDate.ToString("yyyy-MM-dd");
+            query["dataFim"] = (request.UpdatedDate ?? DateTime.Today).ToString("yyyy-MM-dd");
             query["percentual"] = request.CDIPercentage.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
             query["valor"] = request.AppliedAmount.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
 
