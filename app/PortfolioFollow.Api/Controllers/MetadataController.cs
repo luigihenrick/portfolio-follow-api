@@ -22,14 +22,6 @@ namespace PortfolioFollow.Api.Controllers
         };
 
         [HttpGet]
-        [Route("teste")]
-        [Produces("application/json")]
-        public IActionResult Teste()
-        {
-            return Ok(new { success = true });
-        }
-
-        [HttpGet]
         [Route("tipo-ativos")]
         [Produces("application/json")]
         public IActionResult AssetTypes()
