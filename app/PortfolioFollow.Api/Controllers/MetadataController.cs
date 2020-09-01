@@ -20,7 +20,15 @@ namespace PortfolioFollow.Api.Controllers
             { AssetType.RV, typeof(VariableIncomeRequest) },
             { AssetType.TD, typeof(TreasureDirectRequest) },
         };
-        
+
+        [HttpGet]
+        [Route("teste")]
+        [Produces("application/json")]
+        public IActionResult Teste()
+        {
+            return Ok(new { success = true });
+        }
+
         [HttpGet]
         [Route("tipo-ativos")]
         [Produces("application/json")]
